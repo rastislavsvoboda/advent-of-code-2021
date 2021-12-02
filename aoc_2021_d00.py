@@ -9,6 +9,7 @@ import time
 
 start = datetime.now()
 lines = open('0.in').readlines()
+lines = open('0.in0').readlines()
 # text = open('1.in').read()
 
 
