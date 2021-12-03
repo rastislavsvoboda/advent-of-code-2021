@@ -1,9 +1,6 @@
 from datetime import datetime
 from datetime import timedelta
 from collections import defaultdict, deque
-import copy
-import re
-import time
 
 # pypy3.exe .\save.py 3
 
@@ -12,149 +9,102 @@ lines = open('3.in').readlines()
 # lines = open('3.in0').readlines()
 
 
-def solve1(lines):
-    res = 0
-    # 110011110101
-    G0=[0,0,0,0,0,0,0,0,0,0,0,0]
-    G1=[0,0,0,0,0,0,0,0,0,0,0,0]
+def arr_of_bits(lines):
+    A = []
     for line in lines:
         line = line.strip()
-        # words = line.split()
-        # nums = re.findall(r"[+-]?\d+", line)
-        # print(line)
-        for i in range(len(line)):
-            # print(line[i])
-            if line[i] == '0':
-                G0[i] += 1
-            elif line[i] == '1':
-                G1[i] += 1
-            else:
-                print('error')
-
-
-    print(G0)
-    print(G1)
-
-    n1 = ""
-    n2 = "" 
-    for i in range(len(G0)):
-        if G0[i] > G1[i]:
-            n1 += '0'
-            n2 += '1'
-        else:
-            n1 += '1'
-            n2 += '0'
-
-    print(n1, n2)
-        
-
-    b1= int(n1, 2)
-    b2= int(n2, 2)
-
-    print(b1, b2)
-        
-    return b1* b2
-
-
-
-
-def arr(lines):
-    A=[]
-    for line in lines:
-        line = line.strip()
-        a = []
+        bits = []
         for c in line:
-            if c=='0':
-                a.append(0)
+            if c == '0':
+                bits.append(0)
             else:
-                a.append(1)
-        A.append(a)
+                bits.append(1)
+        A.append(bits)
     return A
 
 
 def count_nums(data, i):
-
-    n1 = 0
-    n0 = 0
+    num0 = 0
+    num1 = 0
     for r in data:
         if r[i] == 1:
-            n1 += 1
+            num1 += 1
         else:
-            n0 += 1
+            num0 += 1
 
-    return (n0,n1)
-        
+    return (num0, num1)
+
+
+def bits_to_decimal(bits):
+    res = 0
+    length = len(bits)
+    for i in range(length):
+        res += bits[length-1-i] * 2**i
+    return res
+
+
+def solve1(lines):
+    data = arr_of_bits(lines)
+    length = len(data[0])
+    gama = []
+    epsilon = []
+
+    for i in range(length):
+        num0, num1 = count_nums(data, i)
+        if num1 >= num0:
+            gama.append(1)
+            epsilon.append(0)
+        else:
+            gama.append(0)
+            epsilon.append(1)
+
+    gama_rate = bits_to_decimal(gama)
+    # print ("gama_rate", gama_rate)
+
+    epsilon_rate = bits_to_decimal(epsilon)
+    # print ("epsilon_rate", epsilon_rate)
+
+    return gama_rate * epsilon_rate
 
 
 
 def solve2(lines):
-
-    x = arr(lines)
-    print(x)     
-    print("--")
-
-    val1 = ""
-
+    data = arr_of_bits(lines)
     i = 0
-    while i < len(x[0]):
-
-        n0,n1 = count_nums(x,i)
-        print(n0,n1)
+    while len(data) != 1:
+        n0, n1 = count_nums(data, i)
+        # print(n0,n1)
         if n1 >= n0:
-            x = list(filter(lambda r: r[i] == 1, x))
-            val1 += '1'
+            data = list(filter(lambda r: r[i] == 1, data))
         else:
-            x = list(filter(lambda r: r[i] == 0, x))
-            val1 += '0'
+            data = list(filter(lambda r: r[i] == 0, data))
 
-        print(x)
-        print("--")
-        i+=1
+        i += 1
 
-    val1d = int(val1, 2)
-    print(val1, val1d)
+    oxygen_rating = bits_to_decimal(data[0])
+    # print("oxygen generator rating", oxygen_rating)
 
-
-    x = arr(lines)
-    print(x)     
-
+    data = arr_of_bits(lines)
     i = 0
-    while len(x) != 1:
+    while len(data) != 1:
 
-        n0,n1 = count_nums(x,i)
-        print(n0,n1)
+        n0, n1 = count_nums(data, i)
+        # print(n0,n1)
         if n1 >= n0:
-            x = list(filter(lambda r: r[i] == 0, x))
+            data = list(filter(lambda r: r[i] == 0, data))
         else:
-            x = list(filter(lambda r: r[i] == 1, x))
+            data = list(filter(lambda r: r[i] == 1, data))
 
-        print(x)
-        print("--")
-        i+=1
+        i += 1
 
-    print(x)
+    co2_rating = bits_to_decimal(data[0])
+    # print("CO2 scrubber rating", co2_rating)
 
-    val2 = ""
-    for c in x[0]:
-        if c == 0:
-            val2 += '0'
-        else:
-            val2 += '1'
+    return oxygen_rating * co2_rating
 
 
-    val2d = int(val2, 2)
-    print(val2, val2d)
-
-
-
-
-
-
-    return val1d * val2d
-
-
-# print(solve1(lines))  #
-print(solve2(lines))  #
+print(solve1(lines))  # 2967914
+print(solve2(lines))  # 7041258
 
 stop = datetime.now()
 print("duration:", stop - start)
