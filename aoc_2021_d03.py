@@ -46,25 +46,25 @@ def bits_to_decimal(bits):
 def solve1(lines):
     data = arr_of_bits(lines)
     length = len(data[0])
-    gama = []
+    gamma = []
     epsilon = []
 
     for i in range(length):
         num0, num1 = count_nums(data, i)
         if num1 >= num0:
-            gama.append(1)
+            gamma.append(1)
             epsilon.append(0)
         else:
-            gama.append(0)
+            gamma.append(0)
             epsilon.append(1)
 
-    gama_rate = bits_to_decimal(gama)
-    # print ("gama_rate", gama_rate)
+    gamma_rate = bits_to_decimal(gamma)
+    # print ("gamma_rate", gamma_rate)
 
     epsilon_rate = bits_to_decimal(epsilon)
     # print ("epsilon_rate", epsilon_rate)
 
-    return gama_rate * epsilon_rate
+    return gamma_rate * epsilon_rate
 
 
 

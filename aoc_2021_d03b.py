@@ -26,7 +26,7 @@ def solve1(lines):
     length = len(data[0].strip())
     # print(length)
 
-    gama = ""
+    gamma = ""
     epsilon = ""
 
     for i in range(length):
@@ -34,52 +34,52 @@ def solve1(lines):
         n0, n1 = count_nums(data, i)
 
         if n1 > n0:
-            gama += '1'
+            gamma += '1'
             epsilon += '0'
         elif n0 > n1:
-            gama += '0'
+            gamma += '0'
             epsilon += '1'
         else:
             assert "wrong data - tie"
 
-    gama_rate = int(gama, 2)
-    # print("gama_rate", gama_rate)
+    gamma_rate = int(gamma, 2)
+    # print("gamma_rate", gamma_rate)
 
     epsilon_rate = int(epsilon, 2)
     # print("epsilon_rate", epsilon_rate)
 
-    return gama_rate * epsilon_rate
+    return gamma_rate * epsilon_rate
 
 
 def solve2(lines):
     data = lines
-    i = 0
-    while len(data) > 1:
-        n0, n1 = count_nums(data, i)
-        # print(n0, n1)
-        if n1 >= n0:
-            data = [x for x in data if x[i] == '1']
-        else:
-            data = [x for x in data if x[i] == '0']
+    length = len(data[0].strip())
+    # print(length)
 
-        i += 1
+    oxygen = data
+    co2 = data
 
-    oxygen_rating = int(data[0], 2)
+    for i in range(length):
+        if len(oxygen) > 1:
+            n0, n1 = count_nums(oxygen, i)
+            # print(n0, n1)
+            if n1 >= n0:
+                oxygen = [x for x in oxygen if x[i] == '1']
+            else:
+                oxygen = [x for x in oxygen if x[i] == '0']
+
+        if len(co2) > 1:
+            n0, n1 = count_nums(co2, i)
+            # print(n0,n1)
+            if n1 >= n0:
+                co2 = [x for x in co2 if x[i] == '0']
+            else:
+                co2 = [x for x in co2 if x[i] == '1']
+
+    oxygen_rating = int(oxygen[0], 2)
     # print("oxygen generator rating", oxygen_rating)
 
-    data = lines
-    i = 0
-    while len(data) > 1:
-        n0, n1 = count_nums(data, i)
-        # print(n0,n1)
-        if n1 >= n0:
-            data = [x for x in data if x[i] == '0']
-        else:
-            data = [x for x in data if x[i] == '1']
-
-        i += 1
-
-    co2_rating = int(data[0], 2)
+    co2_rating = int(co2[0], 2)
     # print("CO2 scrubber rating", co2_rating)
 
     return oxygen_rating * co2_rating
