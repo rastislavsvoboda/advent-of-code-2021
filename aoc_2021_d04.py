@@ -14,7 +14,7 @@ text = open('4.in').read()
 
 def get_data(text):
     nums = []
-    data = []
+    boards = []
     first = True
     for grp in text.split('\n\n'):
         if first:
@@ -24,48 +24,42 @@ def get_data(text):
             entries = []
             for row in grp.split('\n'):
                 entries.append(row)
-            data.append(parse_entry(entries))
-    return nums, data
+            boards.append(parse_entry(entries))
+    return nums, boards
 
 
 def parse_entry(entries):
-    answers = []
+    rows = []
     for entry in entries:
         nums = re.findall(r"\d+", entry.strip())
-        answers.append(nums)
-    return answers
+        rows.append(nums)
+
+    return rows
 
 
-def mark(n, m, bingo):
+def mark_number(num, mark, board):
     for r in range(5):
         for c in range(5):
-            if bingo[r][c] == n:
-                m[(r, c)] = True
+            if board[r][c] == num:
+                mark[(r, c)] = True
 
 
-def check(M):
-    winners = []
+def has_five_matching(mark):
+    for r in range(5):
+        matched_cols = sum(1 for c in range(5) if (r, c) in mark)
+        if matched_cols == 5:
+            return True
 
-    for i, m in enumerate(M):
-        for r in range(5):
-            cnt = 0
-            for c in range(5):
-                if (r, c) in m:
-                    cnt += 1
-            if cnt == 5:
-                if i not in winners:
-                    winners.append(i)
+    for c in range(5):
+        matched_rows = sum(1 for r in range(5) if (r, c) in mark)
+        if matched_rows == 5:
+            return True
 
-        for c in range(5):
-            cnt = 0
-            for r in range(5):
-                if (r, c) in m:
-                    cnt += 1
-            if cnt == 5:
-                if i not in winners:
-                    winners.append(i)
+    return False
 
-    return winners
+
+def check(marks):
+    return [i for i, m in enumerate(marks) if has_five_matching(m)]
 
 
 def sum_unmarked(mark, bingo):
@@ -78,18 +72,18 @@ def sum_unmarked(mark, bingo):
 
 
 def solve(text, part):
-    nums, data = get_data(text)
+    nums, boards = get_data(text)
     # print(nums)
 
-    # matches for boards
+    # marks for boards
     M = []
-    for i in range(len(data)):
+    for i in range(len(boards)):
         M.append({})
 
     order = []
-    for n in nums:
-        for i, d in enumerate(data):
-            mark(n, M[i], d)
+    for num in nums:
+        for i, board in enumerate(boards):
+            mark_number(num, M[i], board)
         winners = check(M)
         for w in winners:
             if w not in order:
@@ -106,10 +100,10 @@ def solve(text, part):
 
     # print("order of winners", order)
     board_index = order[-1]
-    sum = sum_unmarked(M[board_index], data[board_index])
+    sum = sum_unmarked(M[board_index], boards[board_index])
     # print("sum of all unmarked numbers", sum)
-    # print("the number that was just called", n)
-    return sum * int(n)
+    # print("the number that was just called", num)
+    return sum * int(num)
 
 
 print(solve(text, 1))  # 23177
