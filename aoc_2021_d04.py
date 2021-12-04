@@ -46,13 +46,19 @@ def mark_number(num, mark, board):
 
 def has_five_matching(mark):
     for r in range(5):
-        matched_cols = sum(1 for c in range(5) if (r, c) in mark)
-        if matched_cols == 5:
+        cnt = 0
+        for c in range(5):
+            if (r,c) in mark:
+                cnt += 1
+        if cnt == 5:
             return True
-
+    
     for c in range(5):
-        matched_rows = sum(1 for r in range(5) if (r, c) in mark)
-        if matched_rows == 5:
+        cnt = 0
+        for r in range(5):
+            if (r,c) in mark:
+                cnt += 1
+        if cnt == 5:
             return True
 
     return False
