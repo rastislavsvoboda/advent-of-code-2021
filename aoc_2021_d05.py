@@ -1,9 +1,6 @@
 from datetime import datetime
-from datetime import timedelta
-from collections import defaultdict, deque
-import copy
+from collections import defaultdict
 import re
-import time
 
 # pypy3.exe .\save.py 5
 
@@ -32,38 +29,33 @@ def print_diagram(diagram):
 
 
 def solve(lines, part):
-    res = 0
-    diagram = defaultdict(int)
+    D = defaultdict(int)
 
     for line in lines:
-        line = line.strip()
-        nums = re.findall(r"\d+", line)
+        nums = re.findall(r"\d+", line.strip())
         x1, y1 = int(nums[0]), int(nums[1])
         x2, y2 = int(nums[2]), int(nums[3])
+        dx = 1 if x2 >= x1 else -1
+        dy = 1 if y2 >= y1 else -1
 
         if x1 == x2:
             # vertical
-            dy = y2 >= y1 and 1 or -1
             for y in range(y1, y2+dy, dy):
-                diagram[(y, x1)] += 1
+                D[(y, x1)] += 1
         elif y1 == y2:
             # horizontal
-            dx = x2 >= x1 and 1 or -1
             for x in range(x1, x2+dx, dx):
-                diagram[(y1, x)] += 1
+                D[(y1, x)] += 1
         elif abs(x2-x1) == abs(y2-y1) and part == 2:
             # diagonal for part 2
-            dx = x2 >= x1 and 1 or -1
-            dy = y2 >= y1 and 1 or -1
-
             y = y1
             for x in range(x1, x2+dx, dx):
-                diagram[y, x] += 1
+                D[y, x] += 1
                 y += dy
 
-    # print_diagram(diagram)
+    # print_diagram(D)
 
-    res = sum(1 for v in diagram.values() if v >= 2)
+    res = sum(1 for v in D.values() if v >= 2)
     return res
 
 
