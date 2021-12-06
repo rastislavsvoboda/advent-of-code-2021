@@ -31,10 +31,8 @@ def solve(lines, days):
                 D2[6] += v
                 D2[8] += v
 
-        d += 1
         D = D2
-        # print(d)
-        # print(D)
+        # print(d+1, D)
 
     res = sum(D.values())
     return res
