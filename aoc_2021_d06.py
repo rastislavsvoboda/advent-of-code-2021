@@ -55,7 +55,7 @@ def solve2(lines):
     d = 0
     while d < 256:
         D2 = defaultdict(int)
-        for k in sorted(D.keys()):
+        for k in D.keys():
             if k > 0:
                 D2[k-1] = D[k]
 
@@ -68,7 +68,7 @@ def solve2(lines):
         # print(d)
         # print(D)
 
-    res = sum(v for k, v in D.items())
+    res = sum(D.values())
     return res
 
 
