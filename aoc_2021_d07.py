@@ -1,5 +1,4 @@
 from datetime import datetime
-import re
 
 # pypy3.exe .\save.py 7
 
@@ -15,20 +14,21 @@ def cost1(h1, h2):
 
 def cost2(h1, h2):
     dist = abs(h1-h2)
-    return sum([i for i in range(0, dist+1)])
+    # computes ~9sec
+    # return sum([i for i in range(0, dist+1)])
+    # this can be optimized to: sum of numbers from 0 .. n = n(n+1)/2
+    # computes 0.1sec
+    return (dist * (dist + 1)) // 2
 
 
 def solve(nums, minN, maxN, cost_fun):
     F = {}
     for h in range(minN, maxN+1):
-        s = sum(cost_fun(x, h) for x in nums)
-        F[h] = s
-
+        F[h] = sum(cost_fun(x, h) for x in nums)
     return min(F.values())
 
 
-line = lines[0].strip()
-nums = re.findall(r"\d+", line)
+nums = [int(x) for x in lines[0].strip().split(',')]
 N = [int(n) for n in nums]
 minN = min(N)
 maxN = max(N)
