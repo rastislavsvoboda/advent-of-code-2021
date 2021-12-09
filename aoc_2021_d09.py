@@ -1,9 +1,5 @@
 from datetime import datetime
-from datetime import timedelta
-from collections import defaultdict, deque
-import copy
-import re
-import time
+from collections import deque
 
 # pypy3.exe .\save.py 9
 
@@ -13,11 +9,10 @@ lines = open('9.in').readlines()
 # lines = open('9.in1').readlines()
 
 
+def is_lower_adj(r, c, F):
+    dr = [1, 0, -1, 0]
+    dc = [0, 1, 0, -1]
 
-def is_lower_adj(r,c,F):
-    dr=[1,0,-1,0]
-    dc=[0,1,0,-1]
-    
     for i in range(4):
         rr = r + dr[i]
         cc = c + dc[i]
@@ -28,124 +23,75 @@ def is_lower_adj(r,c,F):
     return True
 
 
+def solve1(data):
+    low_points = []
+    for r in range(len(data)):
+        for c in range(len(data[r])):
+            if is_lower_adj(r, c, data):
+                low_points.append((r, c))
 
-def solve1(lines):
-    res = 0
+    risk_levels = []
+    for (r, c) in low_points:
+        # The risk level of a low point is 1 plus its height
+        risk_levels.append(1 + data[r][c])
 
-    F=[]
-    for line in lines:
-        line = line.strip()
-        row = [int(w) for w in line]
-        F.append(row)
-
-    # print(F)
-    L=[]
-    for r in range(len(F)):
-        lst = []
-        for c in range(len(F[r])):
-            # print(r,c)
-            low = is_lower_adj(r,c,F)
-            if low: 
-                res += F[r][c] + 1
-            lst.append(low)
-        L.append(lst)
-
-    # for r in L:
-    #     print(r)
-
-    # print(L)
-    return res
+    return sum(risk_levels)
 
 
-def count_sum(r,c,F):
-
-    Q = deque()
-    Q.append((r,c,F[r][c]))
-
-    X = set()
-    X.add((r,c))
-
+def count_area(r, c, F):
+    coords = set()
+    coords.add((r, c))
     seen = set()
-    s = 1
+    Q = deque()
+    Q.append((r, c, F[r][c]))
     while len(Q) > 0:
-        (rr,cc,prev) = Q.popleft()
-        # print(rr,cc,prev)
+        (rr, cc, prev) = Q.popleft()
 
-        if (rr,cc,prev) in seen:
+        if (rr, cc, prev) in seen:
             continue
 
-        if rr<0 or rr>=len(F):
-            continue
+        seen.add((rr, cc, prev))
 
-        if cc<0 or cc>=len(F[rr]):
-            continue
+        if rr >= 0 and rr < len(F) and cc >= 0 and cc < len(F[rr]):
+            curr = F[rr][cc]
 
-        # print(rr,cc)
-        e = F[rr][cc]
+            # Locations of height 9 do not count
+            if curr == 9:
+                continue
 
-        if e == 9:
-            continue
+            if curr > prev:
+                coords.add((rr, cc))
 
-        if e > prev:
-            X.add((rr,cc))
-            # s+= 1
+            Q.append((rr-1, cc, curr))
+            Q.append((rr+1, cc, curr))
+            Q.append((rr, cc-1, curr))
+            Q.append((rr, cc+1, curr))
 
-        seen.add((rr,cc,prev))
-
-        Q.append((rr-1,cc,e))
-        Q.append((rr+1,cc,e))
-        Q.append((rr,cc-1,e))
-        Q.append((rr,cc+1,e))
-
-    # print(X)
-    return len(X)
+    # print(coords)
+    return len(coords)
 
 
-def solve2(lines):
-    res = 0
+def solve2(data):
+    low_points = []
+    for r in range(len(data)):
+        for c in range(len(data[r])):
+            if is_lower_adj(r, c, data):
+                low_points.append((r, c))
 
-    F=[]
-    for line in lines:
-        line = line.strip()
-        row = [int(w) for w in line]
-        F.append(row)
+    basin_sizes = []
+    for (r, c) in low_points:
+        basin_sizes.append(count_area(r, c, data))
 
-    # print(F)
-    S=[]
-    L=[]
+    basin_sizes.sort(reverse=True)
+    assert(len(basin_sizes) >= 3)
+    # print(basin_sizes)
 
-    LOWS=[]
-
-    for r in range(len(F)):
-        lst = []
-        for c in range(len(F[r])):
-            # print(r,c)
-            low = is_lower_adj(r,c,F)
-            if low: 
-                res += F[r][c] + 1
-                LOWS.append((r,c))
-            lst.append(low)
-        L.append(lst)
+    return basin_sizes[0] * basin_sizes[1] * basin_sizes[2]
 
 
-    S=[]
-    for (r,c) in LOWS:
-        s = count_sum(r,c,F)
-        S.append(s)
-
-    S.sort()
-    assert(len(S) >=3)
-    # print(S)    
-
-
-    # print(S[-1], S[-2], S[-3])
-    res = S[-1] * S[-2] * S[-3]
-
-    return res
-
-
-print(solve1(lines))  # 560
-print(solve2(lines))  # 959136
+data = [[int(x) for x in line.strip()] for line in lines]
+print(solve1(data))  # 560
+print(solve2(data))  # 959136
 
 stop = datetime.now()
 print("duration:", stop - start)
