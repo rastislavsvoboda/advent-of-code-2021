@@ -30,7 +30,7 @@ def solve(lines):
                     corrupted = True
                 elif p == '{' and c != '}':
                     corrupted = True
-            if corrupted == True:
+            if corrupted:
                 res1 += POINTS1[c]
                 break
         
