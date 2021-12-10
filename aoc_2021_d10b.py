@@ -10,8 +10,9 @@ lines = open('10.in').readlines()
 
 
 def solve(lines):
+    OPENINGS = ['(', '[', '{', '<']
+    PAIRS = {')': '(', ']': '[', '}': '{', '>': '<' }
     POINTS1 = {')': 3, ']': 57, '}': 1197, '>': 25137}
-    # use opposite characters
     POINTS2 = {'(': 1, '[': 2, '{': 3, '<': 4}
     corrupted_scores = []
     incomplete_scores = []
@@ -19,31 +20,23 @@ def solve(lines):
         line = line.strip()
         Q = deque()
         corrupted = False
-        for c in line:
-            if c in ['[', '<', '(', '{']:
-                Q.append(c)
+        for x in line:
+            if x in OPENINGS:
+                Q.append(x)
             else:
-                p = Q.pop()
-                if p == '[' and c != ']':
+                if Q.pop() != PAIRS[x]:
                     corrupted = True
-                elif p == '<' and c != '>':
-                    corrupted = True
-                elif p == '(' and c != ')':
-                    corrupted = True
-                elif p == '{' and c != '}':
-                    corrupted = True
-            if corrupted:
-                corrupted_scores.append(POINTS1[c])
-                break
-        
-        if not corrupted:
+                    break
+        if corrupted:
+            corrupted_scores.append(POINTS1[x])
+        else:
             score = 0
-            for c in reversed(Q):
-                score = score * 5 + POINTS2[c]
+            for x in reversed(Q):
+                score = score * 5 + POINTS2[x]
             incomplete_scores.append(score)
 
 
-    # print(corrupted_scorescorrupted_scores)
+    # print(corrupted_scores)
     res1 = sum(corrupted_scores)
     
     # print(incomplete_scores)
