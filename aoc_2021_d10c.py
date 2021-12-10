@@ -12,8 +12,9 @@ lines = open('10.in').readlines()
 def parse(line):
     return [x for x in line.strip()]
 
-
-def is_corrupted(brackets):
+# returns (True if is corrupted, rest of stack, first illegal char)
+#         (False if incomplete, rest of stack, None)
+def classify(brackets):
     OPENINGS = '({[<'
     CLOSINGS = ')}]>'
     stack = deque()
@@ -29,12 +30,12 @@ def is_corrupted(brackets):
 
 def score1(entry):
     POINTS1 = {')': 3, ']': 57, '}': 1197, '>': 25137}
-    _corrupted, _rest, illegal = entry
-    return POINTS1[illegal]
+    _is_corrupted, _rest, illegal_char = entry
+    return POINTS1[illegal_char]
 
 
 def score2(entry):
-    _corrupted, rest, _illegal = entry
+    _is_corrupted, rest, _illegal_char = entry
     POINTS2 = {'(': 1, '[': 2, '{': 3, '<': 4}
     score = 0
     for x in reversed(rest):
@@ -48,21 +49,11 @@ def median(lst: list):
     return sorted_lst[len(sorted_lst) // 2]
 
 
-# prepate
-brackets = map(parse, lines)
-data = list(map(is_corrupted, brackets))
-
-# Part 1
+data = list(map(lambda line: classify(parse(line)), lines))
 corrupted = filter(lambda x: x[0] == True, data)
-scores1 = map(score1, corrupted)
-result1 = sum(scores1)
-print(result1)  # 290691
-
-# Part 2
+print(sum(map(score1, corrupted)))
 incomplete = filter(lambda x: x[0] == False, data)
-scores2 = map(score2, incomplete)
-result2 = median(list(scores2))
-print(result2)  # 2768166558
+print(median(map(score2, incomplete)))
 
 
 stop = datetime.now()
