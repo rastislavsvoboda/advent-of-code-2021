@@ -10,14 +10,7 @@ lines = open('11.in').readlines()
 
 
 def get_data(lines):
-    data = []
-    for line in lines:
-        m = []
-        for c in line.strip():
-            m.append(int(c))
-
-        data.append(m)
-    return data
+    return [[int(x) for x in line.strip()] for line in lines]
 
 
 def print_data(data):
