@@ -25,12 +25,16 @@ def print_data(data):
         print(r)
 
 
-def flash(data):
+def step(data):
+    R = len(data)
+    C = len(data[0])
     flashed = set()
     Q = deque()
 
-    for r in range(len(data)):
-        for c in range(len(data[0])):
+    # initial increase, Q is prepared with coords to flash
+    for r in range(R):
+        for c in range(C):
+            data[r][c] += 1
             if data[r][c] > 9:
                 Q.append((r, c))
 
@@ -38,25 +42,19 @@ def flash(data):
         r, c = Q.popleft()
         if (r, c) in flashed:
             continue
+        flashed.add((r, c))
 
-        if data[r][c] > 9:
-            for dr in [-1, 0, 1]:
-                for dc in [-1, 0, 1]:
-                    if dr == 0 and dc == 0:
-                        continue
-                    if r+dr < 0 or r+dr >= len(data):
-                        continue
-                    if c+dc < 0 or c+dc >= len(data[0]):
-                        continue
-                    data[r+dr][c+dc] += 1
-                    if data[r+dr][c+dc] > 9:
-                        Q.append((r+dr, c+dc))
-            flashed.add((r, c))
+        # increase all neighbors, add them if they also going to flash
+        for dr, dc in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
+            if r+dr < 0 or r+dr >= R or c+dc < 0 or c+dc >= C:
+                continue
+            data[r+dr][c+dc] += 1
+            if data[r+dr][c+dc] > 9:
+                Q.append((r+dr, c+dc))
 
-    for r in range(len(data)):
-        for c in range(len(data[0])):
-            if data[r][c] > 9:
-                data[r][c] = 0
+    # reset level of flashed to 0
+    for (r, c) in flashed:
+        data[r][c] = 0
 
     return len(flashed)
 
@@ -64,16 +62,11 @@ def flash(data):
 def solve1(lines):
     M = get_data(lines)
     # print_data(M)
-    R = len(M)
-    C = len(M[0])
 
     total_flashes = 0
     for i in range(100):
-        for r in range(R):
-            for c in range(C):
-                M[r][c] += 1
         # print("after ", i+1)
-        total_flashes += flash(M)
+        total_flashes += step(M)
         # print_data(M)
 
     return total_flashes
@@ -81,18 +74,16 @@ def solve1(lines):
 
 def solve2(lines):
     M = get_data(lines)
-    # print_data(M)
     R = len(M)
     C = len(M[0])
+    # print_data(M)
+    # print(R, C)
 
     i = 0
     while True:
-        for r in range(R):
-            for c in range(C):
-                M[r][c] += 1
         i += 1
         # print("after ", i)
-        num_flashes = flash(M)
+        num_flashes = step(M)
         # print_data(M)
         if (num_flashes == (R*C)):
             break
