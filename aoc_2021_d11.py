@@ -39,11 +39,12 @@ def step(data):
 
         # increase all neighbors, add them if they also going to flash
         for dr, dc in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
-            if r+dr < 0 or r+dr >= R or c+dc < 0 or c+dc >= C:
-                continue
-            data[r+dr][c+dc] += 1
-            if data[r+dr][c+dc] > 9:
-                Q.append((r+dr, c+dc))
+            rr = r + dr
+            cc = c + dc
+            if (0 <= rr < R) and (0 <= cc < C):
+                data[rr][cc] += 1
+                if data[rr][cc] > 9:
+                    Q.append((rr, cc))
 
     # reset level of flashed to 0
     for (r, c) in flashed:
