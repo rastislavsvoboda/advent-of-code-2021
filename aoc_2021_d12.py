@@ -14,11 +14,8 @@ def solve(lines, part):
     E = defaultdict(set)
     for line in lines:
         u, v = line.strip().split('-')
-        # add from -> to
         E[u].add(v)
-        if u != 'start' or v != 'end':
-            # add from <- to
-            E[v].add(u)
+        E[v].add(u)
 
     paths = []
     Q = deque()
@@ -28,17 +25,13 @@ def solve(lines, part):
         path = Q.popleft()
         node = path[-1]
 
-        if node == 'end':
-            paths.append(path[:])
-            continue
-
         for v in E[node]:
             if v == 'start':
                 # don't return to 'start'
                 continue
             elif v == 'end':
                 # 'end' reached
-                Q.append(path + [v])
+                paths.append(path + [v])
                 continue
             elif v.isupper():
                 Q.append(path + [v])
