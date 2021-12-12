@@ -39,8 +39,7 @@ def step(data):
 
         # increase all neighbors, add them if they also going to flash
         for dr, dc in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
-            rr = r + dr
-            cc = c + dc
+            rr, cc = r + dr, c + dc
             if (0 <= rr < R) and (0 <= cc < C):
                 data[rr][cc] += 1
                 if data[rr][cc] > 9:
