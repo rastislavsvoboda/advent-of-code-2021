@@ -44,7 +44,7 @@ def solve(lines, part):
                     # count numbers of visits for small caves
                     small_counts = defaultdict(int)
                     for x in path:
-                        if x.islower() and not (x == "start" or x == "end"):
+                        if x.islower() and not (x == 'start' or x == 'end'):
                             small_counts[x] += 1
                     if max(small_counts.values()) == 1:
                         # each small cave was visited max once
