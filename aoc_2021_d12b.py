@@ -12,11 +12,6 @@ lines = open('12.in').readlines()
 
 def recurse(path, graph, part, paths):
     node = path[-1]
-
-    if node == 'end':
-        paths.append(path)
-        return
-
     for v in graph[node]:
         if v == 'start':
             # don't return to 'start'
