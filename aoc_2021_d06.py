@@ -1,15 +1,12 @@
 from datetime import datetime
-from datetime import timedelta
-from collections import defaultdict, deque
-import copy
+from collections import defaultdict
 import re
-import time
 
 # pypy3.exe .\save.py 6
 
 start = datetime.now()
 lines = open('6.in').readlines()
-# lines = open('6.in0').readlines()
+# lines = open('6.ex1').readlines()
 
 
 def solve1(lines):

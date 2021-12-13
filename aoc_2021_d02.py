@@ -4,7 +4,7 @@ from datetime import datetime
 
 start = datetime.now()
 lines = open('2.in').readlines()
-# lines = open('2.in0').readlines()
+# lines = open('2.ex1').readlines()
 
 
 def solve1(lines):

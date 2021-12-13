@@ -5,8 +5,8 @@ from collections import deque
 
 start = datetime.now()
 lines = open('11.in').readlines()
-# lines = open('11.in0').readlines()
-# lines = open('11.in1').readlines()
+# lines = open('11.ex1').readlines()
+# lines = open('11.ex2').readlines()
 
 
 def get_data(lines):

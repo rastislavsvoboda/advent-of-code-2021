@@ -5,8 +5,8 @@ from collections import deque
 
 start = datetime.now()
 lines = open('9.in').readlines()
-# lines = open('9.in0').readlines()
-# lines = open('9.in1').readlines()
+# lines = open('9.ex1').readlines()
+# lines = open('9.ex2').readlines()
 
 
 def is_lower_adj(r, c, F):

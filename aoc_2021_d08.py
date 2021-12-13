@@ -4,9 +4,9 @@ from datetime import datetime
 
 start = datetime.now()
 lines = open('8.in').readlines()
-# lines = open('8.in0').readlines()
-# lines = open('8.in1').readlines()
-# lines = open('8.in2').readlines()
+# lines = open('8.ex1').readlines()
+# lines = open('8.ex2').readlines()
+# lines = open('8.ex3').readlines()
 
 
 def count_part1(left, right):

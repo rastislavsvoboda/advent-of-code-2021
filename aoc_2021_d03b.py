@@ -4,7 +4,7 @@ from datetime import datetime
 
 start = datetime.now()
 lines = open('3.in').readlines()
-# lines = open('3.in0').readlines()
+# lines = open('3.ex1').readlines()
 
 
 # count number of zeros and ones on i-th position

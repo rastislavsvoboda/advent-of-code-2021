@@ -6,7 +6,7 @@ import re
 
 start = datetime.now()
 lines = open('5.in').readlines()
-# lines = open('5.in0').readlines()
+# lines = open('5.ex1').readlines()
 
 
 def print_diagram(diagram):

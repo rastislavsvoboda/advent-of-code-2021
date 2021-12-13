@@ -6,7 +6,7 @@ from collections import defaultdict, deque
 
 start = datetime.now()
 lines = open('3.in').readlines()
-# lines = open('3.in0').readlines()
+# lines = open('3.ex1').readlines()
 
 
 def arr_of_bits(lines):

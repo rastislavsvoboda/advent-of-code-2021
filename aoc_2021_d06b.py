@@ -5,7 +5,7 @@ from collections import defaultdict
 
 start = datetime.now()
 lines = open('6.in').readlines()
-# lines = open('6.in0').readlines()
+# lines = open('6.ex1').readlines()
 
 
 def solve(lines, days):

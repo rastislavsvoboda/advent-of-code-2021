@@ -9,7 +9,7 @@ import time
 
 start = datetime.now()
 text = open('4.in').read()
-# text = open('4.in0').read()
+# text = open('4.ex1').read()
 
 
 def get_data(text):

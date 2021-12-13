@@ -6,7 +6,7 @@ from collections import deque
 
 start = datetime.now()
 lines = open('10.in').readlines()
-# lines = open('10.in0').readlines()
+# lines = open('10.ex1').readlines()
 
 
 def solve(lines):

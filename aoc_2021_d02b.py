@@ -1,11 +1,12 @@
 from datetime import datetime
 from collections import namedtuple
 from functools import reduce
+
 # pypy3.exe .\save.py 2
 
 start = datetime.now()
 lines = open('2.in').readlines()
-# lines = open('2.in0').readlines()
+# lines = open('2.ex1').readlines()
 
 Entry = namedtuple('Entry', 'command units')
 State1 = namedtuple('State1', 'h_pos depth')

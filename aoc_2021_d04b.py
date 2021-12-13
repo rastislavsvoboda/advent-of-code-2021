@@ -1,15 +1,10 @@
 from datetime import datetime
-from datetime import timedelta
-from collections import defaultdict, deque
-import copy
-import re
-import time
 
 # pypy3.exe .\save.py 4
 
 start = datetime.now()
 text = open('4.in').read()
-# text = open('4.in0').read()
+# text = open('4.ex1').read()
 
 
 def get_data(text):

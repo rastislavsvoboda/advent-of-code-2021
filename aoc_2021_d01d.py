@@ -1,11 +1,10 @@
 from datetime import datetime
-import itertools
 
 # pypy3.exe .\save.py 1
 
 start = datetime.now()
 lines = open('1.in').readlines()
-# lines = open('1.in0').readlines()
+# lines = open('1.ex1').readlines()
 
 
 def solve1(data):

@@ -4,7 +4,7 @@ from datetime import datetime
 
 start = datetime.now()
 lines = open('7.in').readlines()
-# lines = open('7.in0').readlines()
+# lines = open('7.ex1').readlines()
 
 
 def cost2(h1, h2):
