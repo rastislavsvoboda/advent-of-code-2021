@@ -1,16 +1,14 @@
 from datetime import datetime
-from datetime import timedelta
 from collections import defaultdict, deque
 import copy
 import re
-import time
 
 # pypy3.exe .\save.py 0
 
 start = datetime.now()
 lines = open('0.in').readlines()
-lines = open('0.in0').readlines()
-# text = open('1.in').read()
+lines = open('0.ex1').readlines()
+# text = open('0.in').read()
 
 
 # def get_data(text):
