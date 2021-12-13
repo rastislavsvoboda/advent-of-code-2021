@@ -9,7 +9,7 @@ lines = open('13.in').readlines()
 
 
 def parse(lines):
-    numbers = defaultdict(bool)
+    dots = defaultdict(bool)
     instructions = []
     nums = True
     for line in lines:
@@ -20,7 +20,7 @@ def parse(lines):
         if nums:
             words = line.split(',')
             x, y = int(words[0]), int(words[1])
-            numbers[(y, x)] = True
+            dots[(y, x)] = True
         else:
             words = line.split('=')
             n = int(words[1])
@@ -28,7 +28,7 @@ def parse(lines):
                 instructions.append(('x', n))
             else:
                 instructions.append(('y', n))
-    return numbers, instructions
+    return dots, instructions
 
 
 def fold_x(x, data):
@@ -51,56 +51,50 @@ def fold_y(y, data):
     return folded
 
 
-def print_data(N, maxR, maxC, nice=False):
-    for r in range(maxR):
-        for c in range(maxC):
-            if (r, c) in N:
-                if nice:
-                    print('█', end='')
-                else:
-                    print('#', end='')
+def print_data(data, R, C, nice=False):
+    for r in range(R):
+        for c in range(C):
+            if (r, c) in data:
+                print('█' if nice else '#', end='')
             else:
-                if nice:
-                    print(' ', end='')
-                else:
-                    print('.', end='')
+                print(' ' if nice else '.', end='')
         print()
 
 
 def solve1(lines):
-    N, I = parse(lines)
-    maxR = max(N.keys(), key=lambda x: x[0])[0]
-    maxC = max(N.keys(), key=lambda x: x[1])[1]
-    # print_data(N, maxR, maxC)
+    dots, instructions = parse(lines)
+    R = max(dots.keys(), key=lambda p: p[0])[0]
+    C = max(dots.keys(), key=lambda p: p[1])[1]
+    # print_data(dots, R, C)
 
     # part 1 - process only first instruction
-    (axis, n) = I[0]
+    (axis, n) = instructions[0]
     if axis == 'x':
-        N = fold_x(n, N)
-        maxC = maxC // 2
+        dots = fold_x(n, dots)
+        C = C // 2
     else:
-        N = fold_y(n, N)
-        maxR = maxR // 2
+        dots = fold_y(n, dots)
+        R = R // 2
 
-    # print_data(N, maxR, maxC)
-    return len(N)
+    # print_data(dots, R, C)
+    return len(dots)
 
 
 def solve2(lines):
-    N, I = parse(lines)
-    maxR = max(N.keys(), key=lambda p: p[0])[0]
-    maxC = max(N.keys(), key=lambda p: p[1])[1]
-    # print_data(N, maxR, maxC)
+    dots, instructions = parse(lines)
+    R = max(dots.keys(), key=lambda p: p[0])[0]
+    C = max(dots.keys(), key=lambda p: p[1])[1]
+    # print_data(dots, R, C)
 
-    for (axis, n) in I:
+    for (axis, n) in instructions:
         if axis == 'x':
-            N = fold_x(n, N)
-            maxC = maxC // 2
+            dots = fold_x(n, dots)
+            C = C // 2
         else:
-            N = fold_y(n, N)
-            maxR = maxR // 2
+            dots = fold_y(n, dots)
+            R = R // 2
 
-    print_data(N, maxR, maxC, True)
+    print_data(dots, R, C, nice=True)
     return None
 
 
