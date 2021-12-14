@@ -1,5 +1,5 @@
 from datetime import datetime
-from collections import defaultdict
+from collections import defaultdict, Counter
 from typing import NewType
 
 # pypy3.exe .\save.py 14
@@ -27,9 +27,7 @@ def solve1(lines):
         template = template2
         # print("after ", s+1, template)
 
-    C = defaultdict(int)
-    for e in template:
-        C[e] += 1
+    C = Counter(template)
     return max(C.values()) - min(C.values())
 
 
@@ -43,25 +41,21 @@ def solve2(lines):
         data[words[0]] = words[1]
     # print(data)
 
-    C1 = defaultdict(int)
-    for i in range(len(template)-1):
-        C1[template[i:i+2]] += 1
+    C1 = Counter([template[i:i+2] for i in range(len(template)-1)])
     # print(C1)
 
     # ! counting idea from Jonathan Paulson
     for s in range(40):
-        C2 = defaultdict(int)
+        C2 = Counter()
         for c in C1:
             # when XY -> Z
             # there are 2 new pairs XZ, ZY
-            newE1 = c[0] + data[c]
-            C2[newE1] += C1[c]
-            newE2 = data[c] + c[1]
-            C2[newE2] += C1[c]
+            C2[c[0] + data[c]] += C1[c]
+            C2[data[c] + c[1]] += C1[c]
         C1 = C2
         # print("after ", s+1, C1)
 
-    C = defaultdict(int)
+    C = Counter()
     for c in C1:
         # for XY pairs, only count first X element
         C[c[0]] += C1[c]
