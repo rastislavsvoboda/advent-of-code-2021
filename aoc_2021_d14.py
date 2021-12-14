@@ -1,7 +1,5 @@
 from datetime import datetime
-from collections import defaultdict, deque
-import copy
-import re
+from collections import defaultdict
 
 # pypy3.exe .\save.py 14
 
@@ -20,20 +18,17 @@ def solve1(lines):
         data[words[0]] = words[1]
     # print(data)
 
-    res = template
-    # print(res)
-
     for s in range(10):
-        res2 = res[0]
-        for i in range(0, len(res)-1):
-            e = res[i:i+2]
-            res2 += data[e]
-            res2 += res[i+1]
-        res = res2
-        # print("after ", s+1, res)
+        template2 = template[0]
+        for i in range(0, len(template)-1):
+            e = template[i:i+2]
+            template2 += data[e]
+            template2 += template[i+1]
+        template = template2
+        # print("after ", s+1, template)
 
     C = defaultdict(int)
-    for e in res:
+    for e in template:
         C[e] += 1
     return max(C.values()) - min(C.values())
 
@@ -46,13 +41,11 @@ def solve2(lines):
         words = line.split(' -> ')
         assert words[0] not in data
         data[words[0]] = words[1]
-
     # print(data)
-    res = template
 
     C1 = defaultdict(int)
-    for i in range(len(res)-1):
-        C1[res[i:i+2]] += 1
+    for i in range(len(template)-1):
+        C1[template[i:i+2]] += 1
     # print(C1)
 
     # ! counting idea from Jonathan Paulson
@@ -60,7 +53,7 @@ def solve2(lines):
         C2 = defaultdict(int)
         for c in C1:
             # when XY -> Z
-            # there are 2 new pairs XZ, XY
+            # there are 2 new pairs XZ, ZY
             newE1 = c[0] + data[c]
             C2[newE1] += C1[c]
             newE2 = data[c] + c[1]
@@ -70,9 +63,10 @@ def solve2(lines):
 
     C = defaultdict(int)
     for c in C1:
+        # for XY pairs, only count first X element
         C[c[0]] += C1[c]
     # add 1 for last character
-    C[res[-1]] += 1
+    C[template[-1]] += 1
     return max(C.values()) - min(C.values())
 
 
