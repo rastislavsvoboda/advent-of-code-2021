@@ -23,6 +23,7 @@ C = len(M[0])
 
 def solve1():
     res = None
+    end_pos = (R-1, C-1)
     heap = []
     heapq.heappush(heap, (0, 0, 0))
     seen = set()
@@ -32,7 +33,7 @@ def solve1():
             continue
         seen.add((r, c))
 
-        if r == R-1 and c == C-1:
+        if (r,c) == end_pos:
             res = risk
             break
 
@@ -69,17 +70,17 @@ def solve2():
     # the entire cave is actually five times larger in both dimensions
     RT = R * 5
     CT = C * 5
+    end_pos = (RT-1, CT-1)
     heap = []
     heapq.heappush(heap, (0, 0, 0))
     seen = set()
-    res = None
     while len(heap):
         risk, r, c = heapq.heappop(heap)
         if (r, c) in seen:
             continue
         seen.add((r, c))
 
-        if r == RT-1 and c == CT-1:
+        if (r,c) == end_pos:
             res = risk
             break
 
