@@ -25,6 +25,7 @@ def solve1():
     res = None
     end_pos = (R-1, C-1)
     heap = []
+    # priority queue storing tuple: risk, r, c
     heapq.heappush(heap, (0, 0, 0))
     seen = set()
     while len(heap):
@@ -33,7 +34,7 @@ def solve1():
             continue
         seen.add((r, c))
 
-        if (r,c) == end_pos:
+        if (r, c) == end_pos:
             res = risk
             break
 
@@ -57,10 +58,8 @@ def risk2(r, c):
 
 
 def print_risk2():
-    RT = R * 5
-    CT = C * 5
-    for r in range(RT):
-        for c in range(CT):
+    for r in range(R * 5):
+        for c in range(C * 5):
             print(risk2(r, c), end='')
         print()
 
@@ -68,10 +67,11 @@ def print_risk2():
 def solve2():
     res = None
     # the entire cave is actually five times larger in both dimensions
-    RT = R * 5
-    CT = C * 5
+    RT = R * 5 # rows total
+    CT = C * 5 # columns total
     end_pos = (RT-1, CT-1)
     heap = []
+    # priority queue storing tuple: risk, r, c
     heapq.heappush(heap, (0, 0, 0))
     seen = set()
     while len(heap):
@@ -80,7 +80,7 @@ def solve2():
             continue
         seen.add((r, c))
 
-        if (r,c) == end_pos:
+        if (r, c) == end_pos:
             res = risk
             break
 
