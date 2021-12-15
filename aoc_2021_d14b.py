@@ -52,6 +52,7 @@ def solve2(lines):
 
     # do frequency analysis on pairs
     C = Counter([template[i:i+2] for i in range(len(template)-1)])
+    # C = Counter(map(lambda a,b: a+b, template, template[1:]))
     # print(C)
 
     for s in range(40):

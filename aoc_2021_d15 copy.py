@@ -23,28 +23,25 @@ C = len(M[0])
 
 def solve1():
     res = None
-    start_pos = (0, 0)
     end_pos = (R-1, C-1)
     heap = []
-    # priority queue storing: (risk, pos), where pos = (r, c)
-    heapq.heappush(heap, (0, start_pos))
+    heapq.heappush(heap, (0, 0, 0))
     seen = set()
     while len(heap):
-        risk, pos = heapq.heappop(heap)
-        if pos in seen:
-            continue
-        seen.add(pos)
+        risk, r, c = heapq.heappop(heap)
+        seen.add((r,c))
 
-        if pos == end_pos:
+        if (r,c) == end_pos:
             res = risk
             break
 
         for i in range(4):
-            rr = pos[0] + DR[i]
-            cc = pos[1] + DC[i]
+            rr = r + DR[i]
+            cc = c + DC[i]
             if 0 <= rr < R and 0 <= cc < C:
-                heapq.heappush(heap, (risk+M[rr][cc], (rr, cc)))
-
+                newPos = (rr, cc)
+                if newPos not in seen:
+                    heapq.heappush(heap, (risk+M[rr][cc], rr, cc))
     return res
 
 
@@ -59,44 +56,45 @@ def risk2(r, c):
 
 
 def print_risk2():
-    for r in range(R * 5):
-        for c in range(C * 5):
-            print(risk2(r, c), end='')
+    RT = R * 5
+    CT = C * 5
+    for r in range(RT):
+        for c in range(CT):
+            print(risk2(r,c), end='')
         print()
 
 
 def solve2():
     res = None
     # the entire cave is actually five times larger in both dimensions
-    RT = R * 5 # rows total
-    CT = C * 5 # columns total
-    start_pos = (0, 0)
+    RT = R * 5
+    CT = C * 5
     end_pos = (RT-1, CT-1)
     heap = []
-    # priority queue storing: (risk, pos), where pos = (r, c)
-    heapq.heappush(heap, (0, start_pos))
+    heapq.heappush(heap, (0,0,0))
     seen = set()
+    res = None
     while len(heap):
-        risk, pos = heapq.heappop(heap)
-        if pos in seen:
-            continue
-        seen.add(pos)
+        risk, r,c = heapq.heappop(heap)
+        seen.add((r,c))
 
-        if pos == end_pos:
+        if (r,c) == end_pos:
             res = risk
             break
 
         for i in range(4):
-            rr = pos[0] + DR[i]
-            cc = pos[1] + DC[i]
+            rr = r + DR[i]
+            cc = c + DC[i]
             if 0 <= rr < RT and 0 <= cc < CT:
-                heapq.heappush(heap, (risk+risk2(rr, cc), (rr, cc)))
+                newPos = (rr, cc)
+                if newPos not in seen:
+                    heapq.heappush(heap, (risk+risk2(rr, cc), rr, cc))
     return res
 
 
-# print_risk2()
-print(solve1())  # 698
-print(solve2())  # 3022
+# print_risk2() 
+print(solve1())  # 
+# print(solve2())
 
 
 stop = datetime.now()
