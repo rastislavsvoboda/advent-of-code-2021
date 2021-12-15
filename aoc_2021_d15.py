@@ -39,10 +39,8 @@ def solve1():
         for i in range(4):
             rr = r + DR[i]
             cc = c + DC[i]
-            if rr < 0 or rr >= R or cc < 0 or cc >= C:
-                continue
-            # Q.append((risk+M[rr][cc],(rr,cc)))
-            heapq.heappush(heap, (risk+M[rr][cc], rr, cc))
+            if 0 <= rr < R and 0 <= cc < C:
+                heapq.heappush(heap, (risk+M[rr][cc], rr, cc))
 
     return res
 
@@ -88,15 +86,14 @@ def solve2():
         for i in range(4):
             rr = r + DR[i]
             cc = c + DC[i]
-            if rr < 0 or rr >= RT or cc < 0 or cc >= CT:
-                continue
-            heapq.heappush(heap, (risk+risk2(rr, cc), rr, cc))
+            if 0 <= rr < RT and 0 <= cc < CT:
+                heapq.heappush(heap, (risk+risk2(rr, cc), rr, cc))
     return res
 
 
 # print_risk2()
-print(solve1())  #
-print(solve2())
+print(solve1())  # 698
+print(solve2())  # 3022
 
 
 stop = datetime.now()
