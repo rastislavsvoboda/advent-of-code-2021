@@ -1,6 +1,6 @@
 from datetime import datetime
 
-# pypy3.exe .\save.py 15
+# pypy3.exe .\save.py 16
 
 start = datetime.now()
 lines = open('16.in').readlines()
@@ -28,10 +28,8 @@ H = lines[0].strip()
 # H = "9C005AC2F8F0"
 # H = "9C0141080250320F1802104A08"
 
-
 # print(H)
 l = len(H)
-# print(l)
 total_l = l * 4
 
 B = bin(int(H, 16))[2:]
@@ -40,96 +38,74 @@ B = bin(int(H, 16))[2:]
 while len(B) < total_l:
     B = "0" + B
 # print(B)
-# print(len(B))
 assert len(B) == 4 * len(H), "Wrong length"
 
 
-def read(data, n):
-    part = data[:n]
-    return part
-
-
-# def read_grp(data):
-#     res = ""
-#     prefix, data = read_raw(data, 1)
-#     val, data = read_raw(data, 4)
-#     res += val
-#     while prefix == "1":
-#         prefix, data = read_raw(data, 1)
-#         val, data = read_raw(data, 4)
-#         res += val
-#     ret = int(res,2)
-#     return ret, data
-
-def to_dec(b):
-    return int(b, 2)
+def read_dec(bites, i, size):
+    val = bites[i:i+size]
+    return i+size, int(val, 2)
 
 
 def parse(data, versions):
-    value = 0
     i = 0
-    v = to_dec(read(data[i:], 3))
-    i += 3
-    versions.append(v)
-    t = to_dec(read(data[i:], 3))
-    i += 3
+    value = 0
 
-    if t == 4:
+    i, version = read_dec(data, i, 3)
+    versions.append(version)
+
+    i, type_id = read_dec(data, i, 3)
+
+    if type_id == 4:
         # literal
-        val = ""
         while True:
-            p = read(data[i:], 1)
-            i += 1
-            v = read(data[i:], 4)
-            i += 4
-            val += v
-            if p == "0":
+            i, prefix = read_dec(data, i, 1)
+            i, group = read_dec(data, i, 4)
+            value = value * 16 + group
+            if prefix == 0:
                 break
-        value = to_dec(val)
     else:
         # operator
-        subs = []
+        sub_packets = []
 
-        l_t = read(data[i:], 1)
-        i += 1
+        i, len_type_id = read_dec(data, i, 1)
 
-        if l_t == "0":
-            pkt_len = to_dec(read(data[i:], 15))
-            i += 15
+        if len_type_id == 0:
+            i, pkt_len = read_dec(data, i, 15)
+
             frame_end = i+pkt_len
             while i < frame_end:
                 read_cnt, v = parse(data[i:frame_end], versions)
                 i += read_cnt
-                subs.append(v)
+                sub_packets.append(v)
         else:
-            pkt_cnt = to_dec(read(data[i:], 11))
-            i += 11
+            i, pkt_cnt = read_dec(data, i, 11)
+
             for _ in range(pkt_cnt):
                 read_cnt, v = parse(data[i:], versions)
                 i += read_cnt
-                subs.append(v)
+                sub_packets.append(v)
 
-        if t == 0:
-            value = sum(subs)
-        elif t == 1:
+        if type_id == 0:
+            value = sum(sub_packets)
+        elif type_id == 1:
             value = 1
-            for v in subs:
+            for v in sub_packets:
                 value *= v
-        elif t == 2:
-            assert len(subs) >= 1
-            value = min(subs)
-        elif t == 3:
-            assert len(subs) >= 1
-            value = max(subs)
-        elif t == 5:
-            assert len(subs) == 2
-            value = 1 if subs[0] > subs[1] else 0
-        elif t == 6:
-            assert len(subs) == 2
-            value = 1 if subs[0] < subs[1] else 0
-        elif t == 7:
-            assert len(subs) == 2
-            value = 1 if subs[0] == subs[1] else 0
+        elif type_id == 2:
+            assert len(sub_packets) >= 1
+            value = min(sub_packets)
+        elif type_id == 3:
+            assert len(sub_packets) >= 1
+            value = max(sub_packets)
+        elif type_id == 5:
+            assert len(sub_packets) == 2
+            value = 1 if sub_packets[0] > sub_packets[1] else 0
+        elif type_id == 6:
+            assert len(sub_packets) == 2
+            value = 1 if sub_packets[0] < sub_packets[1] else 0
+        elif type_id == 7:
+            assert len(sub_packets) == 2
+            value = 1 if sub_packets[0] == sub_packets[1] else 0
 
     return i, value
 
@@ -140,6 +116,7 @@ _, val = parse(B, versions)
 print(sum(versions))  # 967
 # print("part2")
 print(val)  # 12883091136209
+
 
 stop = datetime.now()
 print("duration:", stop - start)
