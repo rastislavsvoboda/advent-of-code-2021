@@ -5,7 +5,7 @@ from datetime import datetime
 start = datetime.now()
 lines = open('16.in').readlines()
 
-
+# hex
 H = lines[0].strip()
 
 # H="D2FE28"
@@ -29,21 +29,21 @@ H = lines[0].strip()
 # H = "9C0141080250320F1802104A08"
 
 # print(H)
-l = len(H)
-total_l = l * 4
+hex_len = len(H)
+bin_len = hex_len * 4
 
+# binary
 B = bin(int(H, 16))[2:]
 # print(B)
+missing_0_cnt = bin_len - len(B)
 
-while len(B) < total_l:
-    B = "0" + B
+B = "0" * missing_0_cnt + B
 # print(B)
-assert len(B) == 4 * len(H), "Wrong length"
+assert len(B) == bin_len, "Wrong length"
 
 
 def read_dec(data, size):
-    val = data[:size]
-    rest = data[size:]
+    val, rest = data[:size], data[size:]
     return int(val, 2), rest
 
 
@@ -75,8 +75,7 @@ def parse(data, indent, versions):
         if len_type_id == 0:
             pkt_len, data = read_dec(data, 15)
             # print(space + "pkt_len: ", pkt_len)
-            sub_data = data[:pkt_len]
-            data = data[pkt_len:]
+            data, sub_data = data[pkt_len:], data[:pkt_len]
             while len(sub_data) > 0:
                 val, sub_data = parse(sub_data, indent + 1, versions)
                 sub_packets.append(val)
@@ -86,7 +85,7 @@ def parse(data, indent, versions):
 
             for x in range(pkt_cnt):
                 # print(space + "sub pkt: ", x)
-                val, data = parse(data[:], indent + 1, versions)
+                val, data = parse(data, indent + 1, versions)
                 # print(space + "val: ", val)
                 sub_packets.append(val)
 
@@ -117,13 +116,13 @@ def parse(data, indent, versions):
 
 
 versions = []
-val, rest = parse(B, 0, versions)
+value, rest = parse(B, 0, versions)
 # print(rest)
-assert len(rest) == 0 or "1" not in rest
-print("part1")
+assert len(rest) == 0 or "1" not in rest, "Not all data consumed"
+# print("part1")
 print(sum(versions))  # 967
-print("part2")
-print(val)  # 12883091136209
+# print("part2")
+print(value)  # 12883091136209
 
 
 stop = datetime.now()
