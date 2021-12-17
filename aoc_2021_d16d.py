@@ -1,4 +1,5 @@
 from datetime import datetime
+from itertools import islice
 
 # pypy3.exe .\save.py 16
 
@@ -59,29 +60,31 @@ def eq(lst):
 
 
 def take(iterable, n):
-    for _ in range(n):
-        yield next(iterable)
+    return islice(iterable, 0, n, 1)
 
 
 def read_next(bin_iter, size):
-    val = ""
-    for _ in range(size):
-        val += next(bin_iter)
-    return int(val, 2)
-
-# def read_next(bin_iter, size):
-#     val = "".join(iter(take(bin_iter, size)))
-#     return int(val, 2)
+    try:
+        val = ""
+        for _ in range(size):
+            val += next(bin_iter)
+        return int(val, 2)
+    except StopIteration:
+        # print("StopIteration")
+        return None
 
 
 def read_packet(bin_iter):
-    value = 0
     sub_packets = []
 
     ver = read_next(bin_iter, 3)
+    if ver == None:
+        return None, bin_iter
+
     type_id = read_next(bin_iter, 3)
 
     if type_id == 4:
+        value = 0
         # literal
         # print("literal")
         prefix = 1
@@ -94,28 +97,24 @@ def read_packet(bin_iter):
         if len_type_id == 0:
             pkt_len = read_next(bin_iter, 15)
             # print("pkt_len:", pkt_len)
-            buf = []
-            for _ in range(pkt_len):
-                buf.append(next(bin_iter))
 
-            sub_iter = iter(buf)
+            sub_iter = take(bin_iter, pkt_len)
+
             while True:
-                try:
-                    s_ver, s_type_id, s_value, s_sub_packets, sub_iter = read_packet(
-                        sub_iter)
-                    sub_packets.append(
-                        (s_ver, s_type_id, s_value, s_sub_packets))
-                except StopIteration:
+                sub_packet, sub_iter = read_packet(sub_iter)
+                if sub_packet == None:
                     break
+                sub_packets.append(sub_packet)
         else:
             pkt_cnt = read_next(bin_iter, 11)
             # print("pkt_cnt:", pkt_cnt)
 
             for x in range(pkt_cnt):
                 # print(space + "sub pkt:", x)
-                s_ver, s_type_id, s_value, s_sub_packets, bin_iter = read_packet(
-                    bin_iter)
-                sub_packets.append((s_ver, s_type_id, s_value, s_sub_packets))
+                sub_packet, bin_iter = read_packet(bin_iter)
+                if sub_packet == None:
+                    break
+                sub_packets.append(sub_packet)
 
         ops = {
             0: sum,
@@ -130,29 +129,32 @@ def read_packet(bin_iter):
 
         value = ops[type_id](list(map(lambda pckt: pckt[2], sub_packets)))
 
-    return ver, type_id, value, sub_packets, bin_iter
+    return (ver, type_id, value, sub_packets), bin_iter
 
 
 def traverse(packet, versions):
-    ver, t, val, pckts = packet
+    ver, _t, _val, pckts = packet
     versions.append(ver)
     for p in pckts:
         traverse(p, versions)
 
 
-ver, type, value, pckts, rest = read_packet(gen_bin(iter(H)))
+packet, rest = read_packet(gen_bin(iter(H)))
+_ver, _type, value, _sub_packets = packet
 
 # tail = "".join(rest)
 # print(tail)
 # assert tail == ("0" * len(tail)), "Not all data consumed, some 1 in the rest"
 
 versions = []
-traverse((ver, type, value, pckts), versions)
+traverse(packet, versions)
+# print("versions:", versions)
 print(sum(versions))
 print(value)
 
 # 967
 # 12883091136209
+
 
 stop = datetime.now()
 print("duration:", stop - start)
