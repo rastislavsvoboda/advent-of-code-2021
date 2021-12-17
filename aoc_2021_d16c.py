@@ -111,8 +111,8 @@ def parse(data, level, versions):
             0: sum,
             1: product,
             2: min,
-            # 4 is literal
             3: max,
+            # 4 is literal
             5: gt,
             6: lt,
             7: eq,
