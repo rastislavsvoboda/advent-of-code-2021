@@ -14,7 +14,7 @@ H = lines[0].strip()
 
 # part 1
 # H="8A004A801A8002F478"
-H="620080001611562C8802118E34"
+# H="620080001611562C8802118E34"
 # H="C0015000016115A2E0802F182340"
 # H="A0016C880162017C3686B18A3D4780"
 
@@ -37,7 +37,7 @@ B = bin(int(H, 16))[2:]
 
 while len(B) < total_l:
     B = "0" + B
-print(B)
+# print(B)
 assert len(B) == 4 * len(H), "Wrong length"
 
 
@@ -49,11 +49,11 @@ def read_dec(bites, i, size):
 def parse(data, indent, versions):
     i = 0
     space = " " * indent
-    print(space + "parse", i, data)
+    # print(space + "parse", i, data)
     value = 0
 
     i, version = read_dec(data, i, 3)
-    print(space + "version: ", version)
+    # print(space + "version: ", version)
     versions.append(version)
 
     i, type_id = read_dec(data, i, 3)
@@ -74,7 +74,7 @@ def parse(data, indent, versions):
 
         if len_type_id == 0:
             i, pkt_len = read_dec(data, i, 15)
-            print(space + "pkt_len: ", pkt_len)
+            # print(space + "pkt_len: ", pkt_len)
 
             frame_end = i+pkt_len
             while i < frame_end:
@@ -83,38 +83,38 @@ def parse(data, indent, versions):
                 sub_packets.append(v)
         else:
             i, pkt_cnt = read_dec(data, i, 11)
-            print(space + "pkt_cnt: ", pkt_cnt)
+            # print(space + "pkt_cnt: ", pkt_cnt)
 
             for x in range(pkt_cnt):
-                print(space + "sub pkt: ", x)
+                # print(space + "sub pkt: ", x)
                 read_cnt, v = parse(data[i:], indent + 1, versions)
-                print(space + "val: ", v)
+                # print(space + "val: ", v)
                 i += read_cnt
                 sub_packets.append(v)
 
-        # if type_id == 0:
-        #     value = sum(sub_packets)
-        # elif type_id == 1:
-        #     value = 1
-        #     for v in sub_packets:
-        #         value *= v
-        # elif type_id == 2:
-        #     assert len(sub_packets) >= 1
-        #     value = min(sub_packets)
-        # elif type_id == 3:
-        #     assert len(sub_packets) >= 1
-        #     value = max(sub_packets)
-        # elif type_id == 5:
-        #     assert len(sub_packets) == 2
-        #     value = 1 if sub_packets[0] > sub_packets[1] else 0
-        # elif type_id == 6:
-        #     assert len(sub_packets) == 2
-        #     value = 1 if sub_packets[0] < sub_packets[1] else 0
-        # elif type_id == 7:
-        #     assert len(sub_packets) == 2
-        #     value = 1 if sub_packets[0] == sub_packets[1] else 0
+        if type_id == 0:
+            value = sum(sub_packets)
+        elif type_id == 1:
+            value = 1
+            for v in sub_packets:
+                value *= v
+        elif type_id == 2:
+            assert len(sub_packets) >= 1
+            value = min(sub_packets)
+        elif type_id == 3:
+            assert len(sub_packets) >= 1
+            value = max(sub_packets)
+        elif type_id == 5:
+            assert len(sub_packets) == 2
+            value = 1 if sub_packets[0] > sub_packets[1] else 0
+        elif type_id == 6:
+            assert len(sub_packets) == 2
+            value = 1 if sub_packets[0] < sub_packets[1] else 0
+        elif type_id == 7:
+            assert len(sub_packets) == 2
+            value = 1 if sub_packets[0] == sub_packets[1] else 0
 
-    print(space + "Packet:", value)
+    # print(space + "Packet:", value)
     return i, value
 
 
