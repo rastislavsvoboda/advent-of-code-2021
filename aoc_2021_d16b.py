@@ -37,56 +37,55 @@ B = bin(int(H, 16))[2:]
 # print(B)
 missing_0_cnt = bin_len - len(B)
 
-B = "0" * missing_0_cnt + B
+B = ("0" * missing_0_cnt) + B
 # print(B)
 assert len(B) == bin_len, "Wrong length"
 
 
-def read_dec(data, size):
+def read(data, size):
     val, rest = data[:size], data[size:]
     return int(val, 2), rest
 
 
-def parse(data, indent, versions):
-    space = " " * indent
-    # print(space + "parse", data)
+def parse(data, level, versions):
+    space = " " * level
+    # print(space + "parse:", data)
     value = 0
 
-    version, data = read_dec(data, 3)
-    # print(space + "version: ", version)
+    version, data = read(data, 3)
+    # print(space + "version:", version)
     versions.append(version)
 
-    type_id, data = read_dec(data, 3)
+    type_id, data = read(data, 3)
 
     if type_id == 4:
         # literal
-        while True:
-            prefix, data = read_dec(data, 1)
-            group, data = read_dec(data, 4)
+        prefix = 1
+        while prefix == 1:
+            prefix, data = read(data, 1)
+            group, data = read(data, 4)
             value = value * 16 + group
-            if prefix == 0:
-                break
     else:
         # operator
         sub_packets = []
 
-        len_type_id, data = read_dec(data, 1)
+        len_type_id, data = read(data, 1)
 
         if len_type_id == 0:
-            pkt_len, data = read_dec(data, 15)
-            # print(space + "pkt_len: ", pkt_len)
+            pkt_len, data = read(data, 15)
+            # print(space + "pkt_len:", pkt_len)
             data, sub_data = data[pkt_len:], data[:pkt_len]
             while len(sub_data) > 0:
-                val, sub_data = parse(sub_data, indent + 1, versions)
+                val, sub_data = parse(sub_data, level + 1, versions)
                 sub_packets.append(val)
         else:
-            pkt_cnt, data = read_dec(data, 11)
-            # print(space + "pkt_cnt: ", pkt_cnt)
+            pkt_cnt, data = read(data, 11)
+            # print(space + "pkt_cnt:", pkt_cnt)
 
             for x in range(pkt_cnt):
-                # print(space + "sub pkt: ", x)
-                val, data = parse(data, indent + 1, versions)
-                # print(space + "val: ", val)
+                # print(space + "sub pkt:", x)
+                val, data = parse(data, level + 1, versions)
+                # print(space + "val:", val)
                 sub_packets.append(val)
 
         if type_id == 0:
@@ -118,7 +117,7 @@ def parse(data, indent, versions):
 versions = []
 value, rest = parse(B, 0, versions)
 # print(rest)
-assert len(rest) == 0 or "1" not in rest, "Not all data consumed"
+assert rest == ("0" * len(rest)), "Not all data consumed, some 1 in the rest"
 # print("part1")
 print(sum(versions))  # 967
 # print("part2")
