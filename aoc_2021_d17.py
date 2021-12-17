@@ -8,58 +8,48 @@ lines = open('17.in').readlines()
 # lines = open('17.ex1').readlines()
 
 
-def step(x, y, x_vel, y_vel):
-    x += x_vel
-    y += y_vel
+def step(x, y, vx, vy):
+    x += vx
+    y += vy
 
-    if x_vel > 0:
-        x_vel -= 1
-    elif x_vel < 0:
-        x_vel += 1
+    if vx > 0:
+        vx -= 1
+    elif vx < 0:
+        vx += 1
 
-    y_vel -= 1
+    vy -= 1
 
-    return x, y, x_vel, y_vel
+    return x, y, vx, vy
 
 
-def try_solution(x_vel, y_vel, x1, x2, y1, y2):
+def try_solution(vx, vy, x1, x2, y1, y2):
     x, y = (0, 0)
     max_y = y
-    s = 0
-    while s < 500:
-        x, y, x_vel, y_vel = step(x, y, x_vel, y_vel)
-        s += 1
-
-        if y > max_y:
-            max_y = y
-
-
+    for _ in range(500):
+        x, y, vx, vy = step(x, y, vx, vy)
+        max_y = max(max_y, y)
         if x1 <= x <= x2 and y1 <= y <= y2:
             return True, max_y
-
     return False, max_y
 
 
 def solve(lines):
-    res = 0
+    numbers = re.findall(r"[+-]?\d+", lines[0].strip())
+    x1, x2, y1, y2 = [int(n) for n in numbers]
+    # print("target area:", x1,x2,y1,y2)
 
-    nums = re.findall(r"[+-]?\d+", lines[0].strip())
-    x1, x2, y1, y2 = int(nums[0]), int(nums[1]), int(nums[2]), int(nums[3])
+    highest_y = 0
+    ok_velocities = set()
 
-    # print(x1,x2,y1,y2)
+    for vx in range(-500, 501):
+        for vy in range(-500, 501):
+            ok, max_y = try_solution(vx, vy, x1, x2, y1, y2)
+            if ok:
+                print(vx, vy)
+                highest_y = max(highest_y, max_y)
+                ok_velocities.add((vx, vy))
 
-    x, y = (0, 0)
-    OK = set()
-
-    for xv in range(-500, 501):
-        for yv in range(-500, 501):
-            r = try_solution(xv, yv, x1, x2, y1, y2)
-            if r[0]:
-                print(r, xv, yv)
-                res = max(res, r[1])
-                OK.add((xv, yv))
-
-    return res, len(OK)
+    return highest_y, len(ok_velocities)
 
 
 print(solve(lines))  # p1 19503, p2 5200
