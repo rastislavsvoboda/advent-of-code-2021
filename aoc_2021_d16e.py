@@ -112,6 +112,7 @@ def read_packets_by_cnt(bin_iter, cnt):
 
 def read_packet(bin_iter):
     sub_packets = []
+    value = 0
 
     ver = read_next(bin_iter, 3)
     if ver == None:
@@ -126,11 +127,11 @@ def read_packet(bin_iter):
         if len_type_id == 0:
             pkt_len = read_next(bin_iter, 15)
             # print("pkt_len:", pkt_len)
-            sub_packets.append(read_packets_by_len(bin_iter, pkt_len))
+            sub_packets += read_packets_by_len(bin_iter, pkt_len)
         else:
             pkt_cnt = read_next(bin_iter, 11)
             # print("pkt_cnt:", pkt_cnt)
-            sub_packets.append(read_packets_by_cnt(bin_iter, pkt_cnt))
+            sub_packets += read_packets_by_cnt(bin_iter, pkt_cnt)
 
         ops = {
             0: sum,
