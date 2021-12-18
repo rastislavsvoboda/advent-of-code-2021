@@ -130,18 +130,14 @@ def explode(root):
 
             # determine which side it is
             # replace node with val 0
-
             parent_parent = found_parent.parent
+            new_node = Val(0)
+            new_node.parent = parent_parent
+            # replace correct child
             if parent_parent.l == found_parent:
-                new_node = Val(0)
                 parent_parent.l = new_node
-                new_node.parent = parent_parent
-
             elif parent_parent.r == found_parent:
-                new_node = Val(0)
                 parent_parent.r = new_node
-                new_node.parent = parent_parent
-
             else:
                 assert False, "child does not match left or right"
 
@@ -171,19 +167,16 @@ def split(root):
 
         if num.val >= 10:
             # found first 10 or greater
+
+            # split value
             found_parent = num.parent
-            # print(found_parent)
-
+            new_node = split_value(num.val)
+            new_node.parent = found_parent
+            # replace correct child
             if found_parent.l == num:
-                new_node = split_value(num.val)
                 found_parent.l = new_node
-                new_node.parent = found_parent
-
             elif found_parent.r == num:
-                new_node = split_value(num.val)
                 found_parent.r = new_node
-                new_node.parent = found_parent
-
             else:
                 assert False, "child does not match left or right"
 
@@ -209,7 +202,6 @@ def solve1(lines):
         acc = add(acc, sn)
         reduce(acc)
     # print(acc)
-    
     return magnitude(acc)
 
 
