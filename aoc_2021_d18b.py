@@ -31,14 +31,9 @@ def add(a, b):
     node.right = b
     a.parent = node
     b.parent = node
-    # reduce
-    while True:
-        # you must repeatedly do the first action in this list that applies
-        if (explode(node)):
-            continue
-        if (split(node)):
-            continue
-        break    
+    # reduce: you must repeatedly do the first action in this list that applies
+    while explode(node) or split(node):
+        continue
     return node
 
 
@@ -97,17 +92,12 @@ def explode(node):
         level, num = v
         if level == 5:
             # found first with level 5
-
             found_parent = num.parent
             left = found_parent.left.val
             right = found_parent.right.val
             # print(found_parent, left, right)
             
             # # replace with 0
-            # num.value = 0
-            # num.left = None
-            # num.right = None
-
             # determine which side it is
             # replace node with val 0
             parent_parent = found_parent.parent
