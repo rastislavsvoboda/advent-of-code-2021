@@ -34,9 +34,7 @@ total_l = l * 4
 
 B = bin(int(H, 16))[2:]
 # print(B)
-
-while len(B) < total_l:
-    B = "0" + B
+B = B.rjust(4 * len(H), '0')
 # print(B)
 assert len(B) == 4 * len(H), "Wrong length"
 
