@@ -31,6 +31,14 @@ def add(a, b):
     node.right = b
     a.parent = node
     b.parent = node
+    # reduce
+    while True:
+        # you must repeatedly do the first action in this list that applies
+        if (explode(node)):
+            continue
+        if (split(node)):
+            continue
+        break    
     return node
 
 
@@ -129,51 +137,34 @@ def explode(node):
 
 
 def split(node):
-    # collect all values
+    # collect all value nodes
     values = []
     find_values(node, 0, values)
 
-    for i, v in enumerate(values):
-        # print(i,v)
-        _level, num = v
-
+    for (_level, num) in values:
         if num.val >= 10:
-            # found first 10 or greater
-
+            # found first value 10 or greater
             num.left = Node(num.val // 2)
             num.left.parent = num
             num.right = Node(num.val - num.val // 2)    
             num.right.parent = num
             num.val = None         
-
             return True
     return False
 
 
-def reduce(node):
-    while True:
-        # you must repeatedly do the first action in this list that applies
-        if (explode(node)):
-            continue
-        if (split(node)):
-            continue
-        break
-
 
 def solve1(lines):
     snailfish_numbers = [parse(eval(line.strip())) for line in lines]
-
     acc = snailfish_numbers[0]
     for sn in snailfish_numbers[1:]:
         acc = add(acc, sn)
-        reduce(acc)
-    # print(acc)
     return magnitude(acc)
 
 
 def solve2(lines):
     l = len(lines)
-    M = []
+    res = None
     for i in range(l):
         for j in range(l):
             if i != j:
@@ -181,11 +172,10 @@ def solve2(lines):
                 a = parse(eval(lines[i].strip()))
                 b = parse(eval(lines[j].strip()))
                 acc = add(a, b)
-                reduce(acc)
                 m = magnitude(acc)
-                M.append(m)
-
-    return max(M)
+                if res is None or m > res:
+                    res = m
+    return res
 
 
 print(solve1(lines))  # 3574
