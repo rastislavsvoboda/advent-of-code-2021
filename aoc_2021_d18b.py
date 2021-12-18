@@ -34,16 +34,6 @@ def add(a, b):
     return node
 
 
-def split_value(val):
-    assert isinstance(val, int)
-    node = Node()
-    node.left = Node(val // 2)
-    node.left.parent = node
-    node.right = Node(val - val // 2)
-    node.right.parent = node
-    return node
-
-
 def magnitude(node):
     assert isinstance(node, Node)
     if node.val is not None:
@@ -104,6 +94,11 @@ def explode(node):
             left = found_parent.left.val
             right = found_parent.right.val
             # print(found_parent, left, right)
+            
+            # # replace with 0
+            # num.value = 0
+            # num.left = None
+            # num.right = None
 
             # determine which side it is
             # replace node with val 0
@@ -145,17 +140,11 @@ def split(node):
         if num.val >= 10:
             # found first 10 or greater
 
-            # split value
-            found_parent = num.parent
-            new_node = split_value(num.val)
-            new_node.parent = found_parent
-            # replace correct child
-            if found_parent.left == num:
-                found_parent.left = new_node
-            elif found_parent.right == num:
-                found_parent.right = new_node
-            else:
-                assert False, "child does not match left or right"
+            num.left = Node(num.val // 2)
+            num.left.parent = num
+            num.right = Node(num.val - num.val // 2)    
+            num.right.parent = num
+            num.val = None         
 
             return True
     return False
