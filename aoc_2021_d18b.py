@@ -96,8 +96,6 @@ def explode(node):
             left = found_parent.left.val
             right = found_parent.right.val
             # print(found_parent, left, right)
-            
-            # # replace with 0
             # determine which side it is
             # replace node with val 0
             parent_parent = found_parent.parent
@@ -136,12 +134,11 @@ def split(node):
             # found first value 10 or greater
             num.left = Node(num.val // 2)
             num.left.parent = num
-            num.right = Node(num.val - num.val // 2)    
+            num.right = Node(num.val - num.val // 2)
             num.right.parent = num
-            num.val = None         
+            num.val = None
             return True
     return False
-
 
 
 def solve1(lines):
