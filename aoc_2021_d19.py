@@ -73,7 +73,14 @@ def p_to_str(p):
 
 
 def find_common(points0, points1):
-    D0 = defaultdict(set)
+
+    # differencesX - dictionary to map from difference to 2 points
+    # SXD list od differences
+    # cmbsX - list of combinations of 2 points
+    # k - string representation of the difference (probably not needed and tuple can be used)
+
+    # compute differences between points of scanner a
+    differences0 = defaultdict(set)
     S0D = []
     cmbs0 = list(combinations(points0, 2))
     for cmb in cmbs0:
@@ -81,11 +88,12 @@ def find_common(points0, points1):
         d = diff(p1, p2)
         S0D.append(d)
         k = p_to_str(d)
-        D0[k].add(p1)
-        D0[k].add(p2)
+        differences0[k].add(p1)
+        differences0[k].add(p2)
     # print(S0D)
 
-    D1 = defaultdict(set)
+    # compute differences between points of scanner b
+    differences1 = defaultdict(set)
     S1D = []
     cmbs1 = list(combinations(points1, 2))
     for cmb in cmbs1:
@@ -93,8 +101,8 @@ def find_common(points0, points1):
         d = diff(p1, p2)
         S1D.append(d)
         k = p_to_str(d)
-        D1[k].add(p1)
-        D1[k].add(p2)
+        differences1[k].add(p1)
+        differences1[k].add(p2)
     # print(S1D)
 
     s0s = set()
@@ -105,57 +113,59 @@ def find_common(points0, points1):
     for x in S1D:
         s1s.add(p_to_str(x))
 
-    over = s0s.intersection(s1s)
-    # print(over)
-    # print(len(over))
+    overlapping = s0s.intersection(s1s)
+    # print(overlapping)
+    # print(len(overlapping))
 
-    C0 = set()
-    C1 = set()
-    for x in over:
-        C0.update(D0[x])
-        C1.update(D1[x])
-
-    if len(over) < 66:
+    # 66 is combinations for 12 points
+    if len(overlapping) < 66:
+        # not enough overlapping bacons
         return False, [], []
 
-    C0L = list(C0)
+    # create set of points that are in both scanners
+    C0 = set()
+    C1 = set()
+    for x in overlapping:
+        C0.update(differences0[x])
+        C1.update(differences1[x])
 
-    C1L = []
+    # sorted common points lists    
+    common_points0L = list(C0)
+    common_points1L = []
 
-    init_diff = p_to_str(diff(C0L[0], C0L[1]))
+    init_diff = p_to_str(diff(common_points0L[0], common_points0L[1]))
     # print("init dif ", init_diff)
-    cand1 = D1[init_diff]
+    cand1 = differences1[init_diff]
     # print("candidates for first pos:", cand1)
     for c in cand1:
         # print("trying first", c)
-        C1L = []
-        C1L.append(c)
+        common_points1L = []
+        common_points1L.append(c)
         isOk = True
-        for i in range(1, len(C0L)):
-            diff_to_find = p_to_str(diff(C0L[i-1], C0L[i]))
-            next_cand = D1[diff_to_find]
-            # print("next_cand", next_cand)
+        for i in range(1, len(common_points0L)):
+            diff_to_find = p_to_str(diff(common_points0L[i-1], common_points0L[i]))
+            next_cand = differences1[diff_to_find]
 
-            # print("C1L", C1L[i-1] in next_cand)
-
+            # assuming there is no same difference between more than 2 points
             assert len(next_cand) == 2
 
-            item = C1L[i-1]
+            item = common_points1L[i-1]
 
+            # the other point
             rest = [x for x in next_cand if x != item]
             # print("rest", rest)
             if len(rest) != 1:
                 isOk = False
                 break
-            C1L.append(rest[0])
+            common_points1L.append(rest[0])
         if not isOk:
             continue
-        if len(C1L) == len(C1):
+        if len(common_points1L) == len(C1):
             break
 
-    # print(C1L)
+    # print(common_points1L)
 
-    return True, C0L, C1L
+    return True, common_points0L, common_points1L
 
 
 def manhattan_distance(p1, p2):
@@ -182,8 +192,11 @@ def solve(text):
     N = len(data)
     # print(N)
 
+    # final positions of the scanners
     FINAL = {}
     FINAL[0] = (0, 0, 0)
+
+    # good tranformation available for each scanner
     GOOD = {}
     for i in range(N):
         GOOD[i] = [x for x in range(24)]
