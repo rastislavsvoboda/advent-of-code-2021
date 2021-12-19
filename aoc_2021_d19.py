@@ -73,6 +73,7 @@ def p_to_str(p):
 
 
 def find_common(points0, points1):
+    # TODO: refactor / optimize
 
     # differencesX - dictionary to map from difference to 2 points
     # SXD list od differences
@@ -200,8 +201,8 @@ def solve(text):
     GOOD = {}
     for i in range(N):
         GOOD[i] = [x for x in range(24)]
-    # assume that scanner 0 is not transformed and it uses (x,y,z)
-    # so only this transform is possible for scanner 0
+    # scanner 0 is at (0,0,0) so any transf. is the same
+    # so assume it is transf. 0 with (x,y,z)
     GOOD[0] = [0]
 
     seen = set()
@@ -232,6 +233,8 @@ def solve(text):
                             print(f"good transformation for {s0} ({i}), {s1} ({j}), offset {single_offset}")
                             if s1 not in seen:
                                 Q.append(s1)
+                                # assuming when found that only one transf. is correct,
+                                # but stored as list for enable iterating
                                 GOOD[s1] = [j]
                                 x1, y1, z1 = FINAL[s0]
                                 x2, y2, z2 = single_offset
