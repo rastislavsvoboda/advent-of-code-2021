@@ -99,10 +99,11 @@ def find_common(points0, points1):
         common_points_set0.update(differences0[diff_str])
         common_points_set1.update(differences1[diff_str])
 
-    # sorted common points lists    
+    # create common_points_list1 such both lists contains matching points in correct order
+    # compute differences pairwise between points in common_points_list0
+    # and find appropriate points to fill into common_points_list1
     common_points_list0 = list(common_points_set0)
     common_points_list1 = []
-
     init_diff = p_to_str(diff(common_points_list0[0], common_points_list0[1]))
     candidates = differences1[init_diff]
     for point_candidate in candidates:
