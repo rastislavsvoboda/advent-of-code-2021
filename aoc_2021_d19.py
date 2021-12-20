@@ -99,8 +99,6 @@ def find_common(points0, points1):
         common_points_set0.update(differences0[diff_str])
         common_points_set1.update(differences1[diff_str])
 
-    # find the point that is closest to the origin        
-
     # sorted common points lists    
     common_points_list0 = list(common_points_set0)
     common_points_list1 = []
@@ -117,7 +115,7 @@ def find_common(points0, points1):
             # assuming there is no same difference between more than 2 points
             assert len(next_candidates) == 2
             prev_point = common_points_list1[i-1]
-            # the other point
+            # the other points
             other_points = next_candidates - set([prev_point])
             if len(other_points) != 1:
                 isOk = False
@@ -129,7 +127,6 @@ def find_common(points0, points1):
         if len(common_points_list1) == len(common_points_set1):
             break
 
-    # print(common_points1L)
     assert len(common_points_list1) == len(common_points_set1)
 
     return True, common_points_list0, common_points_list1
@@ -184,14 +181,12 @@ def solve(text):
             sid1, points1 = data[s1]
             for i in scanner_transformations[s0]:
                 for j in scanner_transformations[s1]:
-                    trans_points0 = list(map(lambda p: transform(p, i), points0))
-                    trans_points1 = list(map(lambda p: transform(p, j), points1))
+                    trans_points0 = [transform(p, i) for p in points0]
+                    trans_points1 = [transform(p, j) for p in points1]
                     found, common_points0, common_points1 = find_common(trans_points0, trans_points1)
                     if found:
-                        # compute all offsets between common points
-                        offsets = set()
-                        for a, b in zip(common_points0, common_points1):
-                            offsets.add(tuple(offset(a, b)))
+                        # compute all offsets between common points and put it in set
+                        offsets = set([tuple(offset(a, b)) for a, b in zip(common_points0, common_points1)])
                         if len(offsets) == 1:
                             # if it is the same offset for all points
                             # this is correct transformation
