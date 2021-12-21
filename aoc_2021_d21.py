@@ -21,6 +21,10 @@ def next_position(current, advance):
     return ((current-1+advance) % 10)+1
 
 
+def next_player(current):
+    return (current+1) % 2
+
+
 def solve1(lines):
     p1 = int(lines[0].strip().split(':')[1].strip())
     p2 = int(lines[1].strip().split(':')[1].strip())
@@ -29,25 +33,25 @@ def solve1(lines):
     SCORE = [0, 0]
     player = 0
     dice = dice_generator()
-    dice_rolled = 0
+    dice_rolled_count = 0
 
     while True:
         dices = [next(dice) for _ in range(3)]
-        dice_rolled += len(dices)
+        dice_rolled_count += len(dices)
         rolled_val = sum(dices)
 
         POS[player] = next_position(POS[player], rolled_val)
         SCORE[player] += POS[player]
 
         if SCORE[player] >= 1000:
+            # player win
             break
 
-        player = (player+1) % 2
+        player = next_player(player)
 
-    loosing_player = (player+1) % 2
+    loosing_player = next_player(player)
 
-    return SCORE[loosing_player] * dice_rolled
-
+    return SCORE[loosing_player] * dice_rolled_count
 
 
 def solve2(lines):
