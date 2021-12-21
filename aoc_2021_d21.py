@@ -1,6 +1,4 @@
 from datetime import datetime
-from collections import defaultdict, deque, Counter
-from itertools import combinations, permutations, repeat
 
 # pypy3.exe .\save.py 21
 
@@ -8,8 +6,10 @@ start = datetime.now()
 lines = open('21.in').readlines()
 # lines = open('21.ex1').readlines()
 
-def parse(line): 
+
+def parse(line):
     return int(line.strip().split(':')[1].strip())
+
 
 def dice_generator():
     d = 0
