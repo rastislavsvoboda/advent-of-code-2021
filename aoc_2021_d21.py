@@ -56,40 +56,41 @@ def solve1(lines):
     return SCORE[loosing_player] * dice_rolled_count
 
 
-# idea based on Jonathan Paulson
-def play(posA, posB, scoreA, scoreB, memo=None):
-    # player A to move
+def play(player, pos1, pos2, score1, score2, memo=None):
     if memo is None:
         memo = {}
-    if scoreA >= 21:
+
+    if score1 >= 21:
         return (1, 0)
-    if scoreB >= 21:
+
+    if score2 >= 21:
         return (0, 1)
 
-    if (posA, posB, scoreA, scoreB) in memo:
-        return memo[(posA, posB, scoreA, scoreB)]
+    if (player, pos1, pos2, score1, score2) in memo:
+        return memo[(player, pos1, pos2, score1, score2)]
 
-    # (winsA, winsB)
+    # (# of wins for player  1, # of wins for player 2)
     res = (0, 0)
     for d1 in [1, 2, 3]:
         for d2 in [1, 2, 3]:
             for d3 in [1, 2, 3]:
                 rolled_val = d1+d2+d3
-                next_posA = next_position(posA, rolled_val)
-                next_scoreA = scoreA + next_posA
-                # on next play player B to move
-                winsB, winsA = play(posB, next_posA, scoreB, next_scoreA, memo)
-                res = (res[0]+winsA, res[1]+winsB)
+                next_pos1 = next_position(pos1, rolled_val) if player == 0 else pos1
+                next_score1 = score1 + next_pos1            if player == 0 else score1
+                next_pos2 = next_position(pos2, rolled_val) if player == 1 else pos2
+                next_score2 = score2 + next_pos2            if player == 1 else score2
+                wins1, wins2 = play(next_player(player), next_pos1, next_pos2, next_score1, next_score2, memo)
+                res = (res[0]+wins1, res[1]+wins2)
 
-    memo[(posA, posB, scoreA, scoreB)] = res
-    return res
+    memo[(player, pos1, pos2, score1, score2)] = res
+    return res    
 
 
 def solve2(lines):
     p1 = parse(lines[0])
     p2 = parse(lines[1])
 
-    wins1, wins2 = play(p1, p2, 0, 0)
+    wins1, wins2 = play(0, p1, p2, 0, 0)
 
     return max(wins1, wins2)
 
