@@ -8,6 +8,8 @@ start = datetime.now()
 lines = open('21.in').readlines()
 # lines = open('21.ex1').readlines()
 
+def parse(line): 
+    return int(line.strip().split(':')[1].strip())
 
 def dice_generator():
     d = 0
@@ -26,8 +28,8 @@ def next_player(current):
 
 
 def solve1(lines):
-    p1 = int(lines[0].strip().split(':')[1].strip())
-    p2 = int(lines[1].strip().split(':')[1].strip())
+    p1 = parse(lines[0])
+    p2 = parse(lines[1])
 
     POS = [p1, p2]
     SCORE = [0, 0]
@@ -44,7 +46,7 @@ def solve1(lines):
         SCORE[player] += POS[player]
 
         if SCORE[player] >= 1000:
-            # player win
+            # player wins
             break
 
         player = next_player(player)
@@ -55,42 +57,41 @@ def solve1(lines):
 
 
 # idea based on Jonathan Paulson
-def play(pos1, pos2, score1, score2, memo=None):
+def play(posA, posB, scoreA, scoreB, memo=None):
+    # player A to move
     if memo is None:
         memo = {}
-    if score1 >= 21:
+    if scoreA >= 21:
         return (1, 0)
-    if score2 >= 21:
+    if scoreB >= 21:
         return (0, 1)
 
-    if (pos1, pos2, score1, score2) in memo:
-        return memo[(pos1, pos2, score1, score2)]
+    if (posA, posB, scoreA, scoreB) in memo:
+        return memo[(posA, posB, scoreA, scoreB)]
 
+    # (winsA, winsB)
     res = (0, 0)
-    # for  in repeat([1,2,3],3):
-
     for d1 in [1, 2, 3]:
         for d2 in [1, 2, 3]:
             for d3 in [1, 2, 3]:
                 rolled_val = d1+d2+d3
-                next_pos1 = next_position(pos1, rolled_val)
-                next_score1 = score1 + next_pos1
-                next_res = play(pos2, next_pos1, score2, next_score1, memo)
-                res = (res[0]+next_res[1], res[1]+next_res[0])
+                next_posA = next_position(posA, rolled_val)
+                next_scoreA = scoreA + next_posA
+                # on next play player B to move
+                winsB, winsA = play(posB, next_posA, scoreB, next_scoreA, memo)
+                res = (res[0]+winsA, res[1]+winsB)
 
-    memo[(pos1, pos2, score1, score2)] = res
+    memo[(posA, posB, scoreA, scoreB)] = res
     return res
 
 
 def solve2(lines):
-    p1 = int(lines[0].strip().split(':')[1].strip())
-    p2 = int(lines[1].strip().split(':')[1].strip())
+    p1 = parse(lines[0])
+    p2 = parse(lines[1])
 
-    stats = play(p1, p2, 0, 0)
-    wins = max(stats)
-    looses = min(stats)
-    # print("wins:", wins, "looses:", looses)
-    return wins
+    wins1, wins2 = play(p1, p2, 0, 0)
+
+    return max(wins1, wins2)
 
 
 print(solve1(lines))  # 913560
