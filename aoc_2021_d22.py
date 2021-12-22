@@ -15,7 +15,7 @@ def solve1(lines):
     for line in lines:
         numbers = [int(v) for v in re.findall(r"[+-]?\d+", line.strip())]
         x1, x2, y1, y2, z1, z2 = numbers
-        to_on = line.startswith('on')
+        turn_on = line.startswith('on')
 
         # keep data inside -50..50 range on each axes
         x1 = max(x1, -50)
@@ -30,7 +30,7 @@ def solve1(lines):
         for x in range(x1, x2+1):
             for y in range(y1, y2+1):
                 for z in range(z1, z2+1):
-                    if to_on:
+                    if turn_on:
                         G.add((x, y, z))
                     elif (x, y, z) in G:
                         G.remove((x, y, z))
@@ -46,8 +46,8 @@ def solve2(lines):
     for line in lines:
         numbers = [int(v) for v in re.findall(r"[+-]?\d+", line.strip())]
         x1, x2, y1, y2, z1, z2 = numbers
-        to_on = line.startswith('on')
-        D.append((x1, x2, y1, y2, z1, z2, to_on))
+        turn_on = line.startswith('on')
+        D.append((x1, x2, y1, y2, z1, z2, turn_on))
         Xs.add(x1)
         Xs.add(x2+1)
         Ys.add(y1)
@@ -66,11 +66,12 @@ def solve2(lines):
     print("segments done")
 
     G = set()
-    for (x1, x2, y1, y2, z1, z2, to_on) in D:
+    for (x1, x2, y1, y2, z1, z2, turn_on) in D:
+        # turn on/off all segments between x1..x2, y1..y2, z1..z2
         for ix in range(X_segments[x1], X_segments[x2+1]):
             for iy in range(Y_segments[y1], Y_segments[y2+1]):
                 for iz in range(Z_segments[z1], Z_segments[z2+1]):
-                    if to_on:
+                    if turn_on:
                         G.add((ix, iy, iz))
                     elif (ix, iy, iz) in G:
                         G.remove((ix, iy, iz))
@@ -87,22 +88,24 @@ def solve2(lines):
 def make_segments_and_sizes(values):
     # prepare dictionary of segments and sizes
     # for example, if values after sorting are [1, 4, 7, 8, 10, 13]
-    # segment maps value to index, and size is pairwise difference
     # segments:    sizes:
     # 1:  0        4-1=3
     # 4:  1        7-4=3
     # 7:  2        8-7=1
     # 8:  3        10-8=2
     # 10: 4        13-10=3
-    # 13: 5        None
-    lst = sorted(list(values))
-    n = len(lst)
+    # 13: 5        -
+    
+    # needs values of 1D coordinate in increasing order
+    sorted_list = sorted(values)
+
+    # segment maps value to index
     segments = {}
-    sizes = [None] * n
-    for i, val in enumerate(lst):
-        segments[val] = i
-        if i < n-1:
-            sizes[i] = lst[i+1] - val
+    for i, v in enumerate(sorted_list):
+        segments[v] = i
+
+    # size is pairwise difference
+    sizes = [v2-v1 for v1, v2 in zip(sorted_list, sorted_list[1:])]
 
     return segments, sizes
 
