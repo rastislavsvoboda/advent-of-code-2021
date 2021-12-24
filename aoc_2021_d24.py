@@ -91,13 +91,15 @@ def run(program, input):
 
 def solve(lines, part):
     instructions = [line.strip().split() for line in lines]
+    # 0 not allowed
+    digits = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
     if part == 1:
         # decreasing from 9999999
-        input_space = product([9, 8, 7, 6, 5, 4, 3, 2, 1], repeat=7)
+        input_space = product(reversed(digits), repeat=7)
     else:
         # increasing from 1111111
-        input_space = product([1, 2, 3, 4, 5, 6, 7, 8, 9], repeat=7)
+        input_space = product(digits, repeat=7)
 
     for digits in input_space:
         res = is_valid(digits)
